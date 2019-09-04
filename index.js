@@ -18,10 +18,13 @@ server.get('/api/users', (req, res) => {
 
 server.post('/api/users', (req, res) => {
     console.log(req.body)
-    const user = req.body
-    db.insert(user)
+    const { name, bio } = req.body
+    if (!name || !bio) {
+        return res.status(400).json({ error: 'Requires name and bio' })
+    }
+    db.insert({ name, bio })  //Inserts the new user into the database so that an ID can be assigned
         .then(({ id }) => {
-            db.findById(id)
+            db.findById(id)  //Find user form the database
                 .then(user => {
                     res.status(201).json(user)
                 })
